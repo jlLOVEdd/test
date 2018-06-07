@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="default">
+
+    <description>apache shiro配置</description>
+
+    <!-- 安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realms">
+            <list>
+                <ref bean="securityRealm"/>
+            </list>
+        </property>
+        <!-- cacheManager,集合spring缓存工厂 -->
+        <property name="cacheManager" ref="shiroEhcacheManager"/>
+
+        <!--  <property name="sessionManager" ref="sessionManager" />  -->
+    </bean>
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/login.jsp"/>
+        <property name="successUrl" value="/main.jsp"/>
+        <property name="unauthorizedUrl" value="/rest/page/401"/>
+        <property name="filters">
+            <map>
+                <!--<entry key="user" value-ref="userFilter" />-->
+                <entry key="authc" value-ref="formAuthenticationFilter"/>
+
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /main =user
+                /=user
+                /common/** =anon
+                /** =anon
+            </value>
+        </property>
+    </bean>
+    <bean id="userFilter" class="com.wdd.test.service.shiro.UserFilter"></bean>
+    <!--  用户授权信息Cache, 采用EhCache -->
+    <bean id="shiroEhcacheManager"
+          class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:cache/ehcache.xml"/>
+    </bean>
+
+
+    <bean id="securityRealm" class="com.wdd.test.service.shiro.securityRealm" autowire="default">
+        <property name="credentialsMatcher" ref="customCredentialsMatcher"/>
+    </bean>
+
+    <bean id="customCredentialsMatcher" class="com.wdd.test.service.shiro.CustomCredentialsMatcher" autowire="default">
+    </bean>
+    <!-- Shiro生命周期处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- 设置超时时间 -->
+        <property name="globalSessionTimeout" value="60000"/>
+        <property name="deleteInvalidSessions" value="true"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionIdCookieEnabled" value="true"/>
+    </bean>
+</beans>

@@ -1,0 +1,12 @@
+.box {
+    position: relative;
+    width: 100px;
+    height: 90px;
+    overflow: hidden;
+    border: solid 1px;
+}
+.col1, .col2 {
+    height: 200px;
+    position: absolute;
+}
+.col2 { top:200px; } /* 让第二列顶着第一列的末尾*/

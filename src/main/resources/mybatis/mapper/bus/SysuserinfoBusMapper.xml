@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wdd.test.dao.bus.SysuserinfoBusMapper">
+    <resultMap id="VoBaseResultMap" type="com.wdd.test.bean.SysuserinfoVo"  >
+        <result column="nc_userId" property="ncUserId" jdbcType="VARCHAR" />
+        <result column="summary" property="summary" jdbcType="VARCHAR" />
+    </resultMap>
+    <select id="selectByName" >
+       select * from  test.f_sysuserinfo WHERE username=#{name}
+
+    </select>
+</mapper>

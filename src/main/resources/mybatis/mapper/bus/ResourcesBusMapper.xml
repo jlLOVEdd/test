@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wdd.test.dao.bus.ResourcesBusMapper" >
+    <resultMap id="VoBaseResultMap" type="com.wdd.test.bean.Menu" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="code" property="code" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="function" property="function" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="classname" property="classname" jdbcType="VARCHAR" />
+        <result column="icon" property="icon" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <result column="pid" property="pid" jdbcType="INTEGER" />
+        <result column="level" property="level" jdbcType="INTEGER" />
+        <result column="leaf" property="leaf" jdbcType="BIT" />
+        <result column="site" property="site" jdbcType="INTEGER" />
+        <collection property="childrenList" ofType="Menu" column="id" select="selectMenuListByPid"/>
+    </resultMap>
+
+    <sql id="Base_Column_List"   >
+        id, code, name, url, function, description, classname, icon, type, sort, pid, level,
+        leaf, site
+    </sql>
+
+    <select id="selectMenuList" resultMap="VoBaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+       from f_resources where pid='' or pid is null order by id asc
+    </select>
+
+    <select id="selectMenuListByPid" resultMap="VoBaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from f_resources where pid=#{id} order by id asc
+    </select>
+
+</mapper>
